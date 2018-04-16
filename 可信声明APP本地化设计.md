@@ -41,9 +41,13 @@ OntPass服务提供可信卡片模板查询接口，APP查询到卡片模板详�
 
 ### 消息推送
 
-APP的消息推送使用websocket机制。APP主动与OntPass建立websocket连接，OntPass通过验证设备码进行身份认证通过后，会保存该连接和请求参数。待接收可信声明、待接收授权信息、系统消息等信息都可以由OntPass主动推送给APP。
-具体接口和流程设计可参考[API接口文档](http://api.ont.network/chapter2/websocket%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E6%9C%BA%E5%88%B6.html)
+APP的消息推送使用websocket机制。APP主动与OntPass建立websocket连接，OntPass通过验证设备码进行身份认证通过后，会保存该连接和请求参数。待接收可信声明、待接收授权信息、系统消息等信息都由OntPass主动推送给APP，并通过接口Action字段做区分。
+具体接口和流程设计可参考**API接口文档2.10接口**
 
+
+
+### API设计 
+后台服务器API接口设计统一参考[API接口文档](http://api.ont.network/chapter2/websocket%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E6%9C%BA%E5%88%B6.html)
 
 
 
