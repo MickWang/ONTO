@@ -7,7 +7,7 @@
   
 
 ```
-http://128.1.132.167:8081?context=claim:linkedin_authentication&ontid=6469643A6F6E743A5450516E4D576B5943524746513274736147314E566E4468446B75466E4D50476D62&encryptedPrivateKey=6PYNuYx2gMxbVGNe7BBUkK8dCg76R2nhuEFmDZVU92JToRqNj9ggFNyDyV&deviceCode=device478b1d3f748548838a075dd39edee07b&lang=zh_hans
+http://128.1.132.167:8081?context=claim:linkedin_authentication&ontid=6469643A6F6E743A5450516E4D576B5943524746513274736147314E566E4468446B75466E4D50476D62&encryptedPrivateKey=6PYNuYx2gMxbVGNe7BBUkK8dCg76R2nhuEFmDZVU92JToRqNj9ggFNyDyV&deviceCode=deviceafd9d0874ad847ea8250c62fa9018cd0&lang=zh_hans
 ```
 
   
@@ -37,8 +37,6 @@ http://128.1.132.167:8081?context=claim:linkedin_authentication&ontid=6469643A6F
   
 
 `deviceCode`  
-
-  `device478b1d3f748548838a075dd39edee07b`
 
 
 
