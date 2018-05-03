@@ -44,7 +44,8 @@ Here is an example as below.
 	"scrypt": {
 		"n": 16384,
 		"p": 8,
-		"r": 8
+		"r": 8,
+		"dkLen" : 64
 	},
 	"defaultOntid": "did:ont:AMs5NFdXPgCgC7Dci1FdFttvD42HELoLxG",
     "defaultAccountAddress": "AMs5NFdXPgCgC7Dci1FdFttvD42HELoLxG",
@@ -92,7 +93,8 @@ ScryptParameters object has the following structure:
 {
   "n": 16384,
   "r": 8,
-  "p": 8
+  "p": 8,
+  "dkLen" : 64
 }
 ```
 ```n``` is a parameter that defines the CPU/memory cost. Must be a value 2^N.
@@ -100,6 +102,8 @@ ScryptParameters object has the following structure:
 ```r``` is a tuning parameter.
 
 ```p``` is a tuning parameter (parallelization parameter). A large value of p can increase computational cost of SCrypt without increasing the memory usage.
+
+```dkLen```
 
 ## Identity
 
@@ -109,6 +113,7 @@ Identity object has the following structure:
   "ontid": "did:ont:TQLASLtT6pWbThcSCYU1biVqhMnzhTgLFq",
   "label": "MyIdentity",
   "lock": false,
+  "isDefault" : false,
   "controls": [],
   "extra": null
 }
@@ -118,6 +123,8 @@ Identity object has the following structure:
 ```label``` is a label that the user has made to the identity.
 
 ```lock``` indicates whether the identity is locked by user. The client shouldn't update the infomation in a locked identity.
+
+```isDefault``` indicates whether the identity is default.
 
 ```controls``` is an array of Controller objects which describe the details of each controller in the identity.
 
@@ -157,17 +164,35 @@ Parameter object has the following structure:
 Account object has the following structure:
 ```
 {
-  "address": "AQLASLtT6pWbThcSCYU1biVqhMnzhTgLFq",
-  "label": "MyAddress",
+  "address": "TA78QdiA6DgqD5Jc5AX97GQ2fPuCt98kqr",
+  "enc-alg": "aes-256-ctr",
+  "key": "AI08vJjflG4BH2+n+Uus+t1mr1sVSA/KwGoaRt83wKU=",
+  "hash": "sha256",
+  "algorithm": "SM2",
+  "parameters": {
+  	"curve": "sm2p256v1"
+  },
+  "label": "",
+  "publicKey": "131402a7491e289e13cdea16833ccc0dd320abf8a7e93ebc4ae3854403910f3ce27ffc",
+  "signatureScheme": "SM3withSM2",
+  "isDefault": true,
   "lock": false,
-  "algorithm": "ECDSA",
-  "parameters": {},
-  "key": "6PYWB8m1bCnu5bQkRUKAwbZp2BHNvQ3BQRLbpLdTuizpyLkQPSZbtZfoxx",
-  "contract": {},
-  "extra": null
+  "passwordHash": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
 }
 ```
 ```address``` is the base58 encoded address of the account.
+
+```enc-alg``` the algorithm to encrypt private key.
+
+```hash``` the hash algorithm to hash password.
+
+```passwordHash``` the value of password after hash operation.
+
+```publicKey``` the public key.
+
+```signatureScheme``` the signatureScheme used in signature.
+
+```isDefault``` indicates whether the account is default.
 
 ```label``` is a label that the user has made to the account.
 
@@ -179,41 +204,41 @@ Account object has the following structure:
 
 ```key``` is the private key of the account in the NEP-2 format. This field can be null (for watch-only address or non-standard address).
 
-```contract``` is a Contract object which describes the details of the contract. This field can be null (for watch-only address).
-
 ```extra``` is an object that is defined by the implementor of the client for storing extra data. This field can be null.
-
-## Contract
-
-Contract object has the following structure:
-```
-{
-  "script": "21036dc4bf8f0405dcf5d12a38487b359cb4bd693357a387d74fc438ffc7757948b0ac",
-  "parameters": [],
-  "deployed": false
-}
-```
-
-```script``` is the script code of the contract. This field can be null if the contract has been deployed to the blockchain.
-
-```parameters``` is an array of Parameter objects which describe the details of each parameter in the contract function.
-
-```deployed``` indicates whether the contract has been deployed to the blockchain.
 
 ## QR Code Specification 
 
-This is QR Code Specification for both indentity and account. 
+This is QR Code Specification for both identity and account. 
 
 ```
 {
 	"type":"I",
 	"label": "MyIdentity",
 	"algorithm": "ECDSA",
-	"key":"6PYT85poeK8XpuQhnroArEov64NfRsEeB4KiGD1YCoq5xU7sJrnXC92Vey",
+	"scrypt": {
+		"n": 4096,
+		"p": 8,
+		"r": 8
+	},
+	"key":"x0U3gy7mQMpzCYXwlt/oWZerSGaCUimSMN2UiSd2aKs=",
+	"prefix" : "6P27U3I4",
 	"parameters": {
 		 "curve": "secp256r1"
 	}
 }
 ```
 
-```type``` used to distinguish between indentity or account, **I** indicates this is an indentity , **A** indicates this is an account.
+```type``` used to distinguish between identity or account, **I** indicates this is an identity , **A** indicates this is an account.
+
+```label``` the lable of identity or account
+
+```algorithm``` the algorithm for key pair generation
+
+```parameters``` the parameters of the key pair generation algorithm
+
+```scrypt``` the parameters for scrypt.
+
+```key``` the encrypted private key
+
+```prefix``` do two sha256 operations on the address, and get the first 4 bytes of the result.
+
