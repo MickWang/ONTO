@@ -103,7 +103,7 @@ ScryptParameters object has the following structure:
 
 ```p``` is a tuning parameter (parallelization parameter). A large value of p can increase computational cost of SCrypt without increasing the memory usage.
 
-```dkLen```
+```dkLen``` Intended output length in octets of the derived key.
 
 ## Identity
 
