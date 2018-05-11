@@ -17,7 +17,7 @@
  |     value |   description   |
  | :--------:| :------: |
  |   social_media|  社交媒体，如github、twitter、linkedin、facebook  |
-	 |  organization|  机构，如CFCA  |
+ |  organization|  机构，如CFCA  |
 
 
 **机构的ClaimContext字典**
