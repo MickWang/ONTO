@@ -58,7 +58,9 @@ Here is an example as below.
 				"key": "6PYT85poeK8XpuQhnroArEov64NfRsEeB4KiGD1YCoq5xU7sJrnXC92Vey", //加密后的私钥
 				"parameters": {
 				    "curve": "secp256r1"
-				}
+				},
+				"address": "AQkGLumU1tnyJBGV1ZUmD229iQf9KRTTDL",
+  				"salt": "Rv4v3a4U1zFEq28/"
 			}],
 			"label": "",
 			"lock": false,
@@ -75,6 +77,9 @@ Here is an example as below.
 				"script": "210392a4dbb2a44da81e0942cee1a62ff4298e04ed463b88911b97de19a1597fa83dac"
 			},
 			"key": "6PYT85poeK8XpuQhnroArEov64NfRsEeB4KiGD1YCoq5xU7sJrnXC92Vey", //加密后的私钥
+			"address": "AQkGLumU1tnyJBGV1ZUmD229iQf9KRTTDL",
+  			"salt": "Rv4v3a4U1zFEq28/",
+  			"enc-alg": "aes-256-gcm",
 			"label": "",
 			"lock": false,
 			"parameters": {
@@ -139,6 +144,8 @@ Control object has the following structure:
   "parameters": {},
   "id": "1",
   "key": "6PYWB8m1bCnu5bQkRUKAwbZp2BHNvQ3BQRLbpLdTuizpyLkQPSZbtZfoxx",
+  "address": "AQkGLumU1tnyJBGV1ZUmD229iQf9KRTTDL",
+  "salt": "Rv4v3a4U1zFEq28/"
 }
 ```
 ```algorithm``` is the algorithms used in encryption system.
@@ -148,6 +155,10 @@ Control object has the following structure:
 ```id``` is the identify of this control.
 
 ```key``` is the private key of the account in the NEP-2 format. This field can be null (for watch-only address or non-standard address).
+
+```address```  address in base58 format.
+
+```salt``` 16 bytes salt in base64 format.
 
 ## Parameter
 
@@ -165,7 +176,8 @@ Account object has the following structure:
 ```
 {
   "address": "TA78QdiA6DgqD5Jc5AX97GQ2fPuCt98kqr",
-  "enc-alg": "aes-256-ctr",
+  "enc-alg": "aes-256-gcm",
+  "salt" : "Rv4v3a4U1zFEq28/",
   "key": "AI08vJjflG4BH2+n+Uus+t1mr1sVSA/KwGoaRt83wKU=",
   "hash": "sha256",
   "algorithm": "SM2",
@@ -183,6 +195,8 @@ Account object has the following structure:
 ```address``` is the base58 encoded address of the account.
 
 ```enc-alg``` the algorithm to encrypt private key.
+
+```salt``` salt value for decryption.
 
 ```hash``` the hash algorithm to hash password.
 
@@ -221,7 +235,8 @@ This is QR Code Specification for both identity and account.
 		"r": 8
 	},
 	"key":"x0U3gy7mQMpzCYXwlt/oWZerSGaCUimSMN2UiSd2aKs=",
-	"prefix" : "6P27U3I4",
+	"address" : "AQkGLumU1tnyJBGV1ZUmD229iQf9KRTTDL",
+	"salt" : "Rv4v3a4U1zFEq28/",
 	"parameters": {
 		 "curve": "secp256r1"
 	}
@@ -240,5 +255,7 @@ This is QR Code Specification for both identity and account.
 
 ```key``` the encrypted private key
 
-```prefix``` do two sha256 operations on the address, and get the first 4 bytes of the result.
+```address```  address in base58 format.
+
+```salt``` 16 bytes salt in base64 format.
 

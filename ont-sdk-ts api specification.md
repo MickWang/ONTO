@@ -56,18 +56,29 @@
 
 **password** 密码。用来加密解密私钥。
 
+**payer** user agent账户地址，用来支付交易gas
+
 **callback** 原生里定义的回调函数名，用来接收sdk返回的结果。关于sdk和原生交互的详细情况见 [sdk和原生的交互](#5)。
 该方法会通过回调将创建好的钱包文件，以JSON字符串的形式，返回给原生。在创建的过程中，需要将钱包中身份的ONT ID注册到链上，注册成功时，代表钱包和身份创建成功。
 
-注册的过程是通过发送相关的交易到链上并被区块接收，这个过程比较耗时，客户端一直等待将会十分影响用户体验，所以注册的过程只需要发送交易，不需要等待确认结果。只要保证交易成功创建和发送，就极大概率上保证上链成功。客户端需要展示上链的提示页面。
+注册的过程中先发送预执行的交易，来确认交易能够正常执行.
 
 ```
-
-Ont.SDK.createWallet('zhangsan', '123456', 'callback')
+Ont.SDK.createWallet('zhangsan', '123456', 'payer', 'gasPrice', 'gasLimit','callback')
 
 ```
+注册ONT ID上链需要花费gas，这个过程由user agent来完成。
+该方法返回的结构如下：
 
-这个方法内部会创建出相应的交易对象，通过websocket或http发送请求到链上。当交易成功发送后，回调返回结果，具体结果详见[SDK和原生的交互](#5)
+```
+{
+	error //错误码，为0表示成功结果
+	result //返回的结果，JSON格式字符串
+	desc //描述信息
+	tx //交易对象序列化后的字节
+}
+```
+客户端取到结果里的tx，作为参数继续发送请求到user agent(对于ONTO是ONT pass)，由user agent完成ONT ID上链注册过程。当user agent 返回注册成功信息后，客户端可以认为注册完成，创建过程结束。
 
 创建的流程图详见如下：
 
@@ -77,15 +88,23 @@ Ont.SDK.createWallet('zhangsan', '123456', 'callback')
 
 如果返回成功结果的消息，则继续做成功创建的后续处理。
 
+
 ### 1.2 通过导入身份创建钱包
 
-导入身份需要用户提供**身份的名称，加密后的私钥**和**密码**。
+导入身份需要用户提供**身份的名称，加密后的私钥**和**密码**。方法参数如下：
+
 
 **label** 是要导入的身份的名称，可以为空，为空时，sdk会提供自定义生成的名称。
 
-**encryptedPrivateKey ** 加密后私钥，
+**encryptedPrivateKey** 加密后私钥，
 
 **password** 密码。
+
+**address** 地址
+
+**salt** 盐值
+
+**callback** 回调函数名
 
 导入的过程是：先检查加密后的私钥和密码是否正确。然后根据私钥生成ONT ID, 并检查ONT ID是否在链上。如果不存在，回调会返回相应错误码；如果存在，则生成身份和钱包文件，把身份加入到钱包中，回调返回钱包文件。
 
@@ -94,16 +113,14 @@ Ont.SDK.createWallet('zhangsan', '123456', 'callback')
 ![导入身份](http://on-img.com/chart_image/5a991d34e4b0337bad178b8c.png)
 
 ```
-Ont.SDK.importIdentity(label,encryptedPrivateKey, password, callback)
+Ont.SDK.importIdentityAndCreateWallet(label,encryptedPrivateKey, password, address，salt, callback)
 ```
 
 ### 1.3 导入身份到本地钱包
 
-可以通过导入的方式将身份添加到本地钱包的**identities**数组中。
+可以导入身份,然后添加到本地钱包的**identities**数组中。
 
 该方法需要传入的参数如下：
-
-**walletDataStr** 本地钱包文件，JOSN字符串格式。
 
 **label** 导入的身份的名称，可以为空值。
 
@@ -111,34 +128,41 @@ Ont.SDK.importIdentity(label,encryptedPrivateKey, password, callback)
 
 **password** 用户的密码。
 
+**address** 地址
+
+**salt** 盐值
+
 **callback** 回调函数名。
 
-如果成功导入，该方法会返回添加了新身份后的钱包文件，为JSON格式字符串。
+如果成功导入，该方法会返回导入的身份，为JSON格式字符串。
 
 导入的过程同[1.2 通过导入身份创建钱包](#2)
 
 ````
-Ont.SDK.importIdentityWithWallet( walletDaatStr, label, encryptedPrivateKey, password, callback)
+Ont.SDK.importIdentityWithWallet( walletDaatStr, label, encryptedPrivateKey, password,address, salt, callback)
 ````
 
 ### 1.4 导入数字资产账户(Account)到本地钱包
 
 导入账户需要用户提供**账户的标签，加密后的私钥**和**密码**。
 
-**walletDataStr** 本地钱包文件，JSON字符串格式。
 
 **label** 是要导入的账户的标签，可以为空，为空时，sdk会提供自定义生成的标签。
 
-**encryptedPrivateKey ** 加密后私钥，
+**encryptedPrivateKey** 加密后私钥，
 
 **password** 密码。
 
+**address** 地址
+
+**salt** 盐值
+
 导入的过程是：先检查加密后的私钥和密码是否正确，如果正确则通过该账户的私钥来创建账户，并加入到钱包的**accounts**数组中。
 
-成功导入会返回添加了新账户后的钱包文件，为JSON格式字符串。
+成功导入会返回导入的账户，为JSON格式字符串。
 
 ```
-Ont.SDK.importAccountWithWallet(walletDataStr,label,encryptedPrivateKey, password, callback)
+Ont.SDK.importAccountWithWallet(label,encryptedPrivateKey,address,salt, password,callback)
 ```
 
 ## 2. 身份Identity 
@@ -173,6 +197,8 @@ Ont.SDK.importAccountWithWallet(walletDataStr,label,encryptedPrivateKey, passwor
   parameters: {};
   id: string;
   key: string;
+  address: string;
+  salt: string
 }
 ```
 
@@ -184,6 +210,10 @@ Ont.SDK.importAccountWithWallet(walletDataStr,label,encryptedPrivateKey, passwor
 
 `key` 是NEP-2格式的私钥。该字段可以为null（对于只读地址或非标准地址时）。
 
+```address``` 解密私钥时使用的地址。
+
+```salt```  解密私钥时使用的盐值。
+
 ### 2.1 创建身份（本地已有钱包）
 
 创建身份需要的参数说明如下：
@@ -192,13 +222,50 @@ Ont.SDK.importAccountWithWallet(walletDataStr,label,encryptedPrivateKey, passwor
 
 **password** 密码，用来加密和解密身份的私钥
 
+**payer** user agent账户地址，用来支付交易gas
+
+**gasPrice** 花费的gas price
+
+**gasLimit** 花费的gas limit
+
 **callback** 回调函数名。
 
-创建完成，会通过回调返回身份对象的JSON格式字符串
+创建身份需要注册ONT ID到链上。注册ONT ID上链需要花费gas，这个过程由user agent来完成。
+该方法返回的结构如下：
+
+```
+{
+	error //错误码，为0表示成功结果
+	result //返回的结果，JSON格式字符串
+	desc //描述信息
+	tx //交易对象序列化后的字节
+}
+```
+
+客户端取到结果里的tx，作为参数继续发送请求到user agent(对于ONTO是ONT pass)，由user agent完成ONT ID上链注册过程。当user agent 返回注册成功信息后，客户端可以认为注册完成，创建过程结束。
 
 ````
-var identityDataStr = Ont.SDK.createIdentity('zhangsan','123456', callback)
+var identityDataStr = Ont.SDK.createIdentity('zhangsan','123456', payer, gasPrice, gasLimit, callback)
 console.log(accountDataStr)
+````
+
+### 2.2 备份身份
+#### 2.2.1 备份身份为二维码
+二维码的规范请参考[文档](https://ontio.github.io/documentation/ontology_wallet_file_specification_en.html)。
+
+```identityDataStr``` 身份对象的JSON格式字符串
+
+````
+Ont.SDK.exportIdentityToQrcode(identityDataStr : string, callback : string)
+````
+
+#### 2.2.1 备份身份为Keystring
+Keystring = 24个字符的salt + 34个字符的地址 + 加密后私钥
+
+```identityDataStr``` 身份对象的JSON格式字符串
+
+````
+Ont.SDK.exportIdentityToKeystring(identityDataStr : string, callback : string)
 ````
 
 ## 3 账户 Account
@@ -213,6 +280,10 @@ console.log(accountDataStr)
   algorithm : boolean,
   parameters : {},
   key : string,
+  enc-alg : string,
+  salt : string,
+  signatureScheme: string,
+  publicKey: string,
   extra : null
 }
 ```
@@ -227,7 +298,15 @@ console.log(accountDataStr)
 
 `parameters` 是加密算法所需参数。
 
-`key` 是NEP-2格式的私钥。该字段可以为null（对于只读地址或非标准地址）。
+`key`加密后的私钥。
+
+```enc-alg``` 加密算法
+
+```salt``` 加密算法所用盐值，为base64编码。
+
+```signatureScheme``` 签名算法
+
+```publicKey``` 公钥
 
 `extra` 是客户端存储额外信息的字段。该字段可以为null。
 
@@ -251,11 +330,31 @@ var accountDataStr = Ont.SDK.createAccount('zhangsan', '123456', callback)
 console.log(accountDataStr)
 ```
 
+### 3.2 备份账户
+#### 3.2.1 备份账户为二维码
+二维码的规范请参考[文档](https://ontio.github.io/documentation/ontology_wallet_file_specification_en.html)。
+
+```accountDataStr``` 账户对象的JSON格式字符串
+
+```
+Ont.SDK.exportAccountToQrcode(accountDataStr: string, callback : string) 
+```
+
+#### 3.2.2 备份账户为Keystring
+Keystring = 24个字符的salt + 34个字符的地址 + 加密后私钥
+
+```accountDataStr``` 账户对象的JSON格式字符串
+
+```
+Ont.SDK.exportAccountToKeystring(accountDataStr: string, callback : string) 
+```
+
+
 ### 3.2 数字资产转账交易
 
 该方法所需参数说明如下：
 
-**token** 转账的数字货币类型，当前支持ONT。该值为“ONT”。
+**token** 转账的数字货币类型。该值为“ONT”或“ONG”。
 
 **from** 转账发起方的钱包地址。
 
@@ -267,12 +366,20 @@ console.log(accountDataStr)
 
 **password** 用户用来解密私钥的密码。
 
+**salt** 解密私钥所需的盐值。
+
+**gasPrice** 转账所需gas price.
+
+**gasLimit** 转账所需gas limit.
+
+**payer** 转账花费gas地址。
+
 **callback** 回调函数名。
 
 转账交易发送成后，当回调返回成功结果。
 
 ````
-Ont.SDK.transferAssets(token, from, to, value, encryptedPrivateKey, password, callback)
+Ont.SDK.transferAssets(token, from, to, value, encryptedPrivateKey, password, salt，gasPrice，gasLimit，payer, callback)
 ````
 
 ### 3.3 查询数字资产余额
@@ -298,6 +405,51 @@ Ont.SDK.transferAssets(token, from, to, value, encryptedPrivateKey, password, ca
 
 ````
 Ont.SDK.getBalance(address, callback)
+````
+
+### 3.4 提取ong
+参数如下：
+**address** 提取ong的地址
+**value** 提取的值
+**encryptedPrivateKey** 加密后私钥
+**password** 密码
+
+**salt** 解密私钥所需的盐值。
+
+**gasPrice** 提取所需花费的gas price.
+
+**gasLimit** 提取所需花费gas limit.
+
+**payer** 支付gas的地址
+
+**callback** 回调函数名
+
+```
+Ont.SDK.claimOng(address, value, encryptedPrivateKey, password, salt，gasPrice, gasLimit, callback)
+```
+
+### 3.5 查询可提取的ong
+
+参数如下：
+
+**address** 查询的地址
+
+**callback** 回调函数名
+
+````
+Ont.SDK.getUnclaimdOng(address, callback)
+````
+
+### 3.6 根据交易hash查询合约执行状态
+
+参数如下：
+
+**txHash** 交易hash
+
+**callback** 回调函数名
+
+````
+Ont.SDK.querySmartCodeEventByTxhash(txHash, callback)
 ````
 
 ### 4 声明 Claim
@@ -387,6 +539,10 @@ Ont.SDK.getBalance(address, callback)
 
 **password** 用户的密码。
 
+**address** 
+
+**salt**
+
 **callback** 回调函数名。该值为可选参数。
 
 当传入参数正确，返回声明对象。该声明对象中的**Siganature** 是该声明的签名对象。
@@ -394,7 +550,7 @@ Ont.SDK.getBalance(address, callback)
 如果传入的callback，会通过回调返回声明对象的JSON格式字符串。
 
 ````
-var claim = Ont.SDK.signSelfClaim(context, claimData, ontid, encryptedPrivateKey, password, callback)
+var claim = Ont.SDK.signSelfClaim(context, claimData, ontid, encryptedPrivateKey, password, address, salt, callback)
 ````
 
 ### 4.2 工具方法 -- 生成签名
@@ -419,10 +575,14 @@ var claim = Ont.SDK.signSelfClaim(context, claimData, ontid, encryptedPrivateKey
 
 **password** 用户的密码。
 
+**address** 地址
+
+**salt** 盐值
+
 **callback** 回调函数名，可选参数。
 
 ```
-let signature = Ont.SDK.signData(content, encryptedPrivateKey, password, callback)
+let signature = Ont.SDK.signData(content, encryptedPrivateKey, password,checksum,callback)
 console.log(signature.Value)
 ```
 
@@ -433,7 +593,7 @@ console.log(signature.Value)
 如果能够解出私钥，该方法通过回调返回私钥；如果不能解出，会返回相应错误码。
 
 ```
-var encryptedPrivateKey = Ont.SDK.decryptEncryptedPrivateKey( encryptedPrivateKey, password, callback)
+var encryptedPrivateKey = Ont.SDK.decryptEncryptedPrivateKey( encryptedPrivateKey, password,address, salt, callback)
 ```
 
 ### 4.4 发送认证声明到链上并验证是否上链成功
@@ -454,6 +614,16 @@ var encryptedPrivateKey = Ont.SDK.decryptEncryptedPrivateKey( encryptedPrivateKe
 
 **password** 用户的密码
 
+**address** 解密时所需地址
+
+**salt** 解密时所需盐值
+
+**payer** 支付gas的地址
+
+**gasPrice** 交易所需gas price
+
+**gasLimit** 交易所需gas limit
+
 **callback** 回调函数名。
 
 当确认上链成功后，会通过回调返回以下结果：
@@ -466,10 +636,9 @@ var encryptedPrivateKey = Ont.SDK.decryptEncryptedPrivateKey( encryptedPrivateKe
 ````
 
 ```
-Ont.SDK.getClaim(claimId, context, issuer, subject, encryptedPrivateKey, password, callback)
+Ont.SDK.getClaim(claimId, context, issuer, subject, encryptedPrivateKey, password, salt, payer, gasPrice, gasLimit,callback)
 ```
 
-**注意：** 发送认证上链并监听返回的过程比较耗时，客户端需要给出相应的提示页面。
 
 ## 5   SDK和原生的交互 
 
@@ -514,6 +683,7 @@ getWalletDataStr(walletSataStr) {
     error  : number,  //错误码
     result : string,  //JSON字符串格式的结果
     desc   : string   //描述
+    tx     : string   //对于注册ONT ID时有此值，用来继续发送请求到user agent.
 }
 ````
 
@@ -570,6 +740,7 @@ Ont.SDK.setSocketPort('20335')
 | 51000 | UNKNOWN_ONTID  | 不存在的ONT ID |
 | 52000 | NETWORK_ERROR  | 网络错误 |
 | 53000 | Decrypto_ERROR | 解密错误 |
+| 54000 | PreExec_ERROR  | 交易预执行错误 |
 
 
 
