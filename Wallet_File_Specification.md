@@ -39,54 +39,48 @@ Here is an example as below.
 
 ```
 {
-	"name": "mywallet",
+	"defaultOntid": "",
+	"defaultAccountAddress": "",
+	"createTime": "2018-06-22T03:24:14.639Z",
 	"version": "1.0",
 	"scrypt": {
-		"n": 16384,
-		"p": 8,
+		"n": 4096,
 		"r": 8,
-		"dkLen" : 64
+		"p": 8,
+		"dkLen": 64
 	},
-	"defaultOntid": "did:ont:AMs5NFdXPgCgC7Dci1FdFttvD42HELoLxG",
-    "defaultAccountAddress": "AMs5NFdXPgCgC7Dci1FdFttvD42HELoLxG",
-    "createTime": "2018-03-14T03:12:30.862Z",
-    "identitys": [
-		{
-			"controls": [{
-				"algorithm": "ECDSA",
-				"id": "",
-				"key": "6PYT85poeK8XpuQhnroArEov64NfRsEeB4KiGD1YCoq5xU7sJrnXC92Vey", //加密后的私钥
-				"parameters": {
-				    "curve": "secp256r1"
-				},
-				"address": "AQkGLumU1tnyJBGV1ZUmD229iQf9KRTTDL",
-  				"salt": "Rv4v3a4U1zFEq28/"
-			}],
-			"label": "",
-			"lock": false,
-			"ontid": "did:ont:AMs5NFdXPgCgC7Dci1FdFttvD42HELoLxG"  //ontid,身份id
-		}
-	],
-	"accounts": [
-		{
-			"address": "AMs5NFdXPgCgC7Dci1FdFttvD42HELoLxG",
+	"identities": [{
+		"ontid": "did:ont:AadQ5xRwrSsFTGzKfLHc1brzykdnf7phhD",
+		"label": "",
+		"lock": false,
+		"controls": [{
+			"id": "1",
 			"algorithm": "ECDSA",
-			"contract": {
-				"deployed": false,
-				"parameters": ["Signature"],
-				"script": "210392a4dbb2a44da81e0942cee1a62ff4298e04ed463b88911b97de19a1597fa83dac"
-			},
-			"key": "6PYT85poeK8XpuQhnroArEov64NfRsEeB4KiGD1YCoq5xU7sJrnXC92Vey", //加密后的私钥
-			"address": "AQkGLumU1tnyJBGV1ZUmD229iQf9KRTTDL",
-  			"salt": "Rv4v3a4U1zFEq28/",
-  			"enc-alg": "aes-256-gcm",
-			"label": "",
-			"lock": false,
 			"parameters": {
-				 "curve": "secp256r1"
-			}
-		}
-	]
+				"curve": "secp256r1"
+			},
+			"key": "p8U1XN0mH6DJ1TuXwDZzDRulzORAe2uhuPgCchs5uyUBbefGFjC1gk+iUQTKtiOT",
+			"address": "AadQ5xRwrSsFTGzKfLHc1brzykdnf7phhD",
+			"salt": "Ap4vrKldnSFaJGk93cx3gg==",
+			"enc-alg": "aes-256-gcm"
+		}]
+	}],
+	"accounts": [{
+		"address": "AadQ5xRwrSsFTGzKfLHc1brzykdnf7phhD",
+		"label": "a6575fd9",
+		"lock": false,
+		"algorithm": "ECDSA",
+		"parameters": {
+			"curve": "secp256r1"
+		},
+		"key": "NyfxXX+xKDG2agrDy3espqX7N0k3MysTgqx5FxJGI8bkklZQO6+6BSluyBRvEsOx",
+		"enc-alg": "aes-256-gcm",
+		"salt": "MHct5XIedi86rQILJFi9lA==",
+		"isDefault": false,
+		"publicKey": "03e897f5a1ea306270e3e1e539c9065b6905e2430aae7f4802e1114f01634d7235",
+		"signatureScheme": "SHA256withECDSA"
+	}],
+	"extra": null
 }
 ```
 
@@ -119,8 +113,7 @@ Identity object has the following structure:
   "label": "MyIdentity",
   "lock": false,
   "isDefault" : false,
-  "controls": [],
-  "extra": null
+  "controls": []
 }
 ```
 ```ontid``` is the ontid of the identity.
@@ -175,21 +168,19 @@ Parameter object has the following structure:
 Account object has the following structure:
 ```
 {
-  "address": "TA78QdiA6DgqD5Jc5AX97GQ2fPuCt98kqr",
-  "enc-alg": "aes-256-gcm",
-  "salt" : "Rv4v3a4U1zFEq28/",
-  "key": "AI08vJjflG4BH2+n+Uus+t1mr1sVSA/KwGoaRt83wKU=",
-  "hash": "sha256",
-  "algorithm": "SM2",
-  "parameters": {
-  	"curve": "sm2p256v1"
-  },
-  "label": "",
-  "publicKey": "131402a7491e289e13cdea16833ccc0dd320abf8a7e93ebc4ae3854403910f3ce27ffc",
-  "signatureScheme": "SM3withSM2",
-  "isDefault": true,
-  "lock": false,
-  "passwordHash": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
+    "address": "AadQ5xRwrSsFTGzKfLHc1brzykdnf7phhD",
+    "label": "a6575fd9",
+    "lock": false,
+    "algorithm": "ECDSA",
+    "parameters": {
+    	"curve": "secp256r1"
+     },
+    "key": "NyfxXX+xKDG2agrDy3espqX7N0k3MysTgqx5FxJGI8bkklZQO6+6BSluyBRvEsOx",
+    "enc-alg": "aes-256-gcm",
+    "salt": "MHct5XIedi86rQILJFi9lA==",
+    "isDefault": false,
+    "publicKey": "03e897f5a1ea306270e3e1e539c9065b6905e2430aae7f4802e1114f01634d7235",
+    "signatureScheme": "SHA256withECDSA"
 }
 ```
 ```address``` is the base58 encoded address of the account.
@@ -197,10 +188,6 @@ Account object has the following structure:
 ```enc-alg``` the algorithm to encrypt private key.
 
 ```salt``` salt value for decryption.
-
-```hash``` the hash algorithm to hash password.
-
-```passwordHash``` the value of password after hash operation.
 
 ```publicKey``` the public key.
 
@@ -218,7 +205,7 @@ Account object has the following structure:
 
 ```key``` is the private key of the account in the NEP-2 format. This field can be null (for watch-only address or non-standard address).
 
-```extra``` is an object that is defined by the implementor of the client for storing extra data. This field can be null.
+
 
 ## QR Code Specification 
 

@@ -46,7 +46,7 @@
 
 希望了解更多钱包数据规范请参考[Wallet\_File_Specification](https://github.com/ONTIO-Community/ONTO/blob/master/Wallet_File_Specification.md).
 
-### 1.1 创建新的身份和钱包
+### 1.1 创建新的身份和钱包文件
 
 用户可以通过传递身份名称和密码来创建新的身份。创建新身份时会在本地新建钱包文件，并将创建的身份加入到钱包文件的**identities**数组中。 创建过程分为两步：**创建钱包文件**和**注册ONT ID**。
 
@@ -89,7 +89,7 @@ Ont.SDK.createWallet('zhangsan', '123456', 'payer', 'gasPrice', 'gasLimit','call
 如果返回成功结果的消息，则继续做成功创建的后续处理。
 
 
-### 1.2 通过导入身份创建钱包
+### 1.2 通过导入身份创建钱包文件
 
 导入身份需要用户提供**身份的名称，加密后的私钥**和**密码**。方法参数如下：
 
@@ -450,6 +450,80 @@ Ont.SDK.getUnclaimdOng(address, callback)
 
 ````
 Ont.SDK.querySmartCodeEventByTxhash(txHash, callback)
+````
+
+### 3.7 导入账户助记词
+
+参数如下：
+
+**mnemonic** 助记词
+
+**password** 密码
+
+**callback** 回调函数名
+
+````
+Ont.SDK.importAccountMnemonic(mnemonic, password, callback)
+````
+
+### 3.8 导出账户WIF私钥
+
+参数如下：
+
+**encryptedKey** 加密的私钥
+
+**password**  密码
+
+**address** 地址
+
+**salt** 盐值
+
+**callback** 回调函数名
+
+###  3.9 通过WIF导入账户
+
+参数如下：
+
+**wif** wif格式私钥
+
+**password** 密码
+
+**callback** 回调函数名
+
+````
+Ont.SDK.importAccountWithWif(wif, password, callback)
+````
+
+### 3.10 通过私钥导入账户
+
+参数如下：
+
+**privateKey** 私钥
+
+**password** 密码
+
+**callback** 回调函数名
+
+````
+Ont.SDK.importAccountWithPrivateKey(privateKey, password, callback)
+````
+
+### 3.11 解密助记词
+
+参数如下：
+
+**mnemonicEnc** 加密后助记词
+
+**address** 地址
+
+**salt** 盐值
+
+**password** 密码
+
+**callback** 回调函数名
+
+````
+decryptMnemonicEnc(mnemonicEnc, address, salt, password, callback)
 ````
 
 ### 4 声明 Claim
