@@ -817,7 +817,88 @@ Ont.SDK.setSocketPort('20335')
 | 54000 | PreExec_ERROR  | 交易预执行错误 |
 
 
+## 9 Token Swap相关
+### 9.1 查询nep-5的 ONT余额
+参数说明：
+
+`address` 查询余额的地址，Base58格式
+
+`callback` 回调名
+
+返回值：
+```
+{
+ error: 0,
+ result: 金额
+}
+```
+
+结果里的金额带有精度，需要除以 `100000000` 得到最终结果。
+
+```
+Ont.SDK.getNeoBalance(contractHash, address, callback)
+```
 
 
+### 9.2 转账nep-5的ONT
+参数说明：
+
+`from` 发送者地址。base58格式
+
+`to` 接收者地址。base58格式。
+
+`value` 转账金额
+
+`encryptedPrivateKey` 加密后私钥
+
+`password` 密码
+
+`salt` 盐值
+
+`callback` 回调名
+
+返回值：
+```
+{
+	error: 0,
+	result: 交易hash
+}
+```
+
+```
+Ont.SDK.neoTransfer(
+        from,
+        to,
+        value:
+        encryptedPrivateKey,
+        password,
+        salt,
+        callback
+    )
+```
+
+### 10 发送交易
+发送交易到链上。注意调用前先设定好连接的环境和端口。
+返回的结果类似如下：
+
+```
+{
+    "Action": "sendrawtransaction",
+    "Desc": "",
+    "Error":0,
+    "Result": "",
+    "Version": "1.0.0"
+}
+```
+`Result` 是交易hash，可用来查询交易执行结果。
 
 
+参数说明
+
+`txData` 序列化后的交易对象。十六进制字符串形式。
+
+`callback` 回调名。
+
+```
+Ont.SDK.sendTransaction(txData, callback)
+```
